@@ -1,0 +1,51 @@
+﻿@model IEnumerable<TM470GradeCalc.Models.GradeCalc>
+
+<div class="container">
+    <h2>Grade Progression</h2>
+    <div class="chart-container" style="position: relative; height: 40vh; width: 80vw;">
+        <canvas id="gradeChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('gradeChart').getContext('2d');
+    var gradeChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.Select(m => m.CalculationDate.ToString("MM/dd/yyyy")))),
+            datasets: [{
+                label: 'Final Grade (%)',
+                data: @Html.Raw(Json.Serialize(Model.Select(m => m.CalculateFinalGrade()))),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
+</script>
+
